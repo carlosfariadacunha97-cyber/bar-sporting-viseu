@@ -287,7 +287,7 @@
 <script>
   // ─── CONFIGURAÇÃO ────────────────────────────────────────────
   // Cola aqui o URL do teu Google Apps Script depois de publicar
-  const APPS_SCRIPT_URL = "COLA_AQUI_O_URL_DO_APPS_SCRIPT";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEl6-gPFy2kOrCeFC5jVLv5iAsTI1AcJSeGQ0rnCESVYgK1xd4zwU3NqT3G7nDuB84/exec";
 
   const PRODUTOS = [
     { id: "mini",    nome: "Mini",        preco: 1.00, emoji: "🍺" },
@@ -370,19 +370,19 @@
     btn.disabled = true;
     btn.textContent = 'A enviar...';
 
-    const payload = {
-      mesa: mesaSelecionada,
-      itens: linhas.join(', '),
-      total: PRODUTOS.reduce((s, p) => s + quantidades[p.id] * p.preco, 0).toFixed(2),
-      hora: new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })
-    };
+    const total = PRODUTOS.reduce((s, p) => s + quantidades[p.id] * p.preco, 0).toFixed(2);
+    const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+    const itens = linhas.join(', ');
 
-    // Enviar para Google Apps Script
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify(payload)
-    })
+    // Enviar via GET (evita problemas de CORS)
+    const url = APPS_SCRIPT_URL
+      + '?action=novo'
+      + '&mesa=' + encodeURIComponent(mesaSelecionada)
+      + '&itens=' + encodeURIComponent(itens)
+      + '&total=' + encodeURIComponent(total)
+      + '&hora=' + encodeURIComponent(hora);
+
+    fetch(url, { mode: 'no-cors' })
     .then(() => mostrarSucesso())
     .catch(() => mostrarSucesso());
   }
