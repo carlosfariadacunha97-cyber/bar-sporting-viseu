@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Bar – Sporting Viseu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --verde: #1a7c3e;
+      --verde-escuro: #0f4f27;
+      --amarelo: #f5c800;
+      --branco: #ffffff;
+      --fundo: #f0f0ec;
+      --cinza: #e0e0da;
+      --texto: #1a1a18;
+      --texto-suave: #6b6b66;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--verde-escuro);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-area { display: flex; align-items: center; gap: 14px; }
+    .logo-badge {
+      width: 44px; height: 44px;
+      background: var(--amarelo);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 16px;
+      color: var(--verde-escuro);
+    }
+    .logo-text h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px; font-weight: 800;
+      color: white; line-height: 1;
+    }
+    .logo-text p { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .sync-info {
+      font-size: 12px; color: rgba(255,255,255,0.65);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sync-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4cef80;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+
+    /* Stats */
+    .stats-bar {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px;
+      background: var(--verde);
+    }
+    .stat {
+      flex: 1;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+    .stat-n {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px; font-weight: 800;
+      color: white; line-height: 1;
+    }
+    .stat-label { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+
+    /* Boards */
+    .boards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      padding: 20px 24px;
+    }
+    .board {
+      background: var(--branco);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--cinza);
+    }
+    .board-header {
+      padding: 12px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px; font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .board-header .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .board-novos .board-header { background: #fff8e0; color: #7a5f00; }
+    .board-novos .dot { background: var(--amarelo); }
+    .board-prep .board-header { background: #e6f0fb; color: #1a4f8c; }
+    .board-prep .dot { background: #2d7dd6; }
+    .board-feitos .board-header { background: #e8f5ee; color: #0f5228; }
+    .board-feitos .dot { background: var(--verde); }
+
+    .board-body { padding: 10px; min-height: 200px; }
+
+    .pedido-card {
+      border: 1px solid var(--cinza);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+    .pedido-card:hover { transform: translateY(-1px); }
+    .card-top {
+      padding: 10px 12px 8px;
+      background: var(--fundo);
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--cinza);
+    }
+    .card-mesa {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px; font-weight: 800;
+      color: var(--verde);
+    }
+    .card-hora { font-size: 11px; color: var(--texto-suave); }
+    .card-itens {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--texto);
+      line-height: 1.6;
+    }
+    .card-total {
+      padding: 0 12px 8px;
+      font-size: 12px;
+      color: var(--texto-suave);
+      font-weight: 500;
+    }
+    .card-actions {
+      display: flex; gap: 6px;
+      padding: 8px 10px;
+      border-top: 1px solid var(--cinza);
+    }
+    .card-btn {
+      flex: 1; padding: 8px 6px;
+      border: none; border-radius: 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .card-btn:hover { opacity: 0.85; }
+    .card-btn.primary { background: var(--verde); color: white; }
+    .card-btn.danger {
+      background: var(--fundo); color: var(--texto-suave);
+      border: 1px solid var(--cinza);
+    }
+
+    .vazio {
+      text-align: center;
+      padding: 30px 10px;
+      color: var(--cinza);
+      font-size: 28px;
+    }
+
+    /* Toast */
+    .toast-wrap {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--verde-escuro);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      animation: slideIn 0.25s ease, fadeOut 0.4s ease 3.5s forwards;
+      pointer-events: none;
+    }
+    @keyframes slideIn { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(10px); } }
+
+    /* Botão limpar feitos */
+    .limpar-btn {
+      margin: 0 24px 20px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--cinza);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--texto-suave);
+      cursor: pointer;
+    }
+    .limpar-btn:hover { background: var(--cinza); }
+
+    @media (max-width: 700px) {
+      .boards { grid-template-columns: 1fr; }
+      .stats-bar { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-badge">SCP</div>
+    <div class="logo-text">
+      <h1>Painel do Bar</h1>
+      <p>Sporting Clube de Portugal – Viseu</p>
+    </div>
+  </div>
+  <div class="sync-info">
+    <div class="sync-dot"></div>
+    A atualizar a cada <span id="timer">10</span>s
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-n" id="s-novos">0</div>
+    <div class="stat-label">Novos</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n" id="s-prep">0</div>
+    <div class="stat-label">Em prep.</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n" id="s-feitos">0</div>
+    <div class="stat-label">Entregues hoje</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n" id="s-total">0,00 €</div>
+    <div class="stat-label">Total faturado</div>
+  </div>
+</div>
+
+<div class="boards">
+  <div class="board board-novos">
+    <div class="board-header"><div class="dot"></div> Novos pedidos</div>
+    <div class="board-body" id="col-novos"><div class="vazio">✔</div></div>
+  </div>
+  <div class="board board-prep">
+    <div class="board-header"><div class="dot"></div> Em preparação</div>
+    <div class="board-body" id="col-prep"><div class="vazio">✔</div></div>
+  </div>
+  <div class="board board-feitos">
+    <div class="board-header"><div class="dot"></div> Entregues</div>
+    <div class="board-body" id="col-feitos"><div class="vazio">✔</div></div>
+  </div>
+</div>
+<button class="limpar-btn" onclick="limparEntregues()">🗑 Limpar entregues</button>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+  // ─── CONFIGURAÇÃO ────────────────────────────────────────────
+  // Cola aqui o mesmo URL do Apps Script
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEl6-gPFy2kOrCeFC5jVLv5iAsTI1AcJSeGQ0rnCESVYgK1xd4zwU3NqT3G7nDuB84/exec";
+  const INTERVALO_SEGUNDOS = 10;
+  // ─────────────────────────────────────────────────────────────
+
+  let pedidos = [];
+  let totalFaturado = 0;
+  let timerCount = INTERVALO_SEGUNDOS;
+  let ultimoId = 0;
+
+  function toastMsg(msg) {
+    const wrap = document.getElementById('toast-wrap');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    wrap.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+  }
+
+  function renderPedidos() {
+    const cols = { novo: 'col-novos', prep: 'col-prep', entregue: 'col-feitos' };
+    Object.values(cols).forEach(id => document.getElementById(id).innerHTML = '');
+
+    let novos=0, prep=0, feitos=0;
+    pedidos.forEach(p => {
+      if (p.estado === 'novo') novos++;
+      else if (p.estado === 'prep') prep++;
+      else feitos++;
+
+      const card = criarCard(p);
+      const col = document.getElementById(cols[p.estado]);
+      col.appendChild(card);
+    });
+
+    if (!document.getElementById('col-novos').children.length)
+      document.getElementById('col-novos').innerHTML = '<div class="vazio">✔</div>';
+    if (!document.getElementById('col-prep').children.length)
+      document.getElementById('col-prep').innerHTML = '<div class="vazio">✔</div>';
+    if (!document.getElementById('col-feitos').children.length)
+      document.getElementById('col-feitos').innerHTML = '<div class="vazio">✔</div>';
+
+    document.getElementById('s-novos').textContent = novos;
+    document.getElementById('s-prep').textContent = prep;
+    document.getElementById('s-feitos').textContent = feitos;
+    document.getElementById('s-total').textContent = totalFaturado.toFixed(2).replace('.', ',') + ' €';
+  }
+
+  function criarCard(p) {
+    const div = document.createElement('div');
+    div.className = 'pedido-card';
+    div.dataset.id = p.id;
+
+    let acoes = '';
+    if (p.estado === 'novo') {
+      acoes = `<button class="card-btn primary" onclick="avancar(${p.id})">▶ Preparar</button>
+               <button class="card-btn danger" onclick="cancelar(${p.id})">Cancelar</button>`;
+    } else if (p.estado === 'prep') {
+      acoes = `<button class="card-btn primary" onclick="avancar(${p.id})">✓ Entregue</button>`;
+    }
+
+    div.innerHTML = `
+      <div class="card-top">
+        <div class="card-mesa">Mesa ${p.mesa}</div>
+        <div class="card-hora">${p.hora}</div>
+      </div>
+      <div class="card-itens">${p.itens}</div>
+      <div class="card-total">${parseFloat(p.total).toFixed(2).replace('.', ',')} €</div>
+      ${acoes ? `<div class="card-actions">${acoes}</div>` : ''}`;
+    return div;
+  }
+
+  function avancar(id) {
+    const p = pedidos.find(x => x.id === id);
+    if (!p) return;
+    if (p.estado === 'novo') p.estado = 'prep';
+    else if (p.estado === 'prep') {
+      p.estado = 'entregue';
+      totalFaturado += parseFloat(p.total);
+      toastMsg(`✅ Mesa ${p.mesa} entregue — ${parseFloat(p.total).toFixed(2).replace('.', ',')} €`);
+      // Atualizar estado no Google Sheets
+      atualizarEstado(p);
+    }
+    renderPedidos();
+  }
+
+  function cancelar(id) {
+    pedidos = pedidos.filter(x => x.id !== id);
+    renderPedidos();
+  }
+
+  function limparEntregues() {
+    pedidos = pedidos.filter(p => p.estado !== 'entregue');
+    renderPedidos();
+  }
+
+  function atualizarEstado(pedido) {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('COLA')) return;
+    fetch(APPS_SCRIPT_URL + '?action=update&id=' + pedido.id + '&estado=' + pedido.estado);
+  }
+
+  // Buscar pedidos do Google Sheets
+  function buscarPedidos() {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('COLA')) return;
+    fetch(APPS_SCRIPT_URL + '?action=get')
+      .then(r => r.json())
+      .then(data => {
+        const novos = data.filter(p => !pedidos.find(x => x.id === p.id));
+        if (novos.length) {
+          novos.forEach(p => { p.estado = 'novo'; pedidos.push(p); });
+          toastMsg(`🔔 ${novos.length} novo(s) pedido(s)!`);
+          renderPedidos();
+        }
+      })
+      .catch(() => {});
+  }
+
+  // Demo: adicionar pedido de teste
+  function adicionarDemo() {
+    const demos = [
+      { mesa: 3, itens: '2x Mini, 1x Bifana', total: '4.50' },
+      { mesa: 7, itens: '1x Cerveja 0,33, 2x Água', total: '3.20' },
+      { mesa: 1, itens: '3x Mini', total: '3.00' },
+    ];
+    const d = demos[pedidos.length % demos.length];
+    ultimoId++;
+    pedidos.unshift({
+      id: ultimoId,
+      mesa: d.mesa,
+      itens: d.itens,
+      total: d.total,
+      hora: new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }),
+      estado: 'novo'
+    });
+    toastMsg(`🔔 Novo pedido da mesa ${d.mesa}!`);
+    renderPedidos();
+  }
+
+  // Timer
+  setInterval(() => {
+    timerCount--;
+    if (timerCount <= 0) {
+      timerCount = INTERVALO_SEGUNDOS;
+      buscarPedidos();
+    }
+    document.getElementById('timer').textContent = timerCount;
+  }, 1000);
+
+  renderPedidos();
+</script>
+
+<!-- Botão demo -->
+<div style="position:fixed;bottom:24px;left:24px;">
+  <button onclick="adicionarDemo()" style="background:var(--verde);color:white;border:none;border-radius:10px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">
+    + Simular pedido (demo)
+  </button>
+</div>
+
+</body>
+</html>
